@@ -190,6 +190,17 @@ describe DAG do
 
     end
 
+    describe '.topological_sort' do
+      it 'returns a correct topological sort' do
+        sort = subject.topological_sort
+        expect(sort).to be_an_instance_of(Array)
+        expect(sort.length).to eq(3)
+        expect(sort[0].my_name).to eq("joe")
+        expect(sort[1].my_name).to eq("bob")
+        expect(sort[2].my_name).to eq("jane")
+      end
+    end
+
   end
 
 end

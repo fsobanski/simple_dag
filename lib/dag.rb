@@ -84,6 +84,41 @@ class DAG
     return result
   end
 
+  # Returns an array of the vertices in the graph in a topological order, i.e.
+  # for every path in the dag from a vertex v to a vertex u, v comes before u
+  # in the array.
+  #
+  # Uses a depth first search.
+  #
+  # Assuming that the method include? of class Set runs in linear time, which
+  # can be assumed in all practical cases, this method runs in O(n*m) where
+  # m is the number of edges and n is the number of vertices because the method
+  # successors of class Vertex uses the method outgoing_edges, which runs in
+  # O(m). If the outgoing_edges of Vertex would be cached or precomputed then
+  # this topological sorting could run in O(n+m).
+  def topological_sort
+    result_size = 0
+    result = Array.new(@vertices.length)
+    visited = Set.new
+
+    visit = lambda { |v|
+      return if visited.include? v
+      v.successors.each do |u|
+        visit.call u
+      end
+      visited.add v
+      result_size += 1
+      result[-result_size] = v
+    }
+
+    @vertices.each do |v|
+      next if visited.include? v
+      visit.call v
+    end
+
+    return result
+  end
+
   private
 
   def is_my_vertex?(v)
