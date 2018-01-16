@@ -48,7 +48,7 @@ See the specs for more detailed usage scenarios.
 
 ## Compatibility
 
-Tested with Ruby 1.9.x, JRuby, Rubinius.
+Tested with Ruby 2.2, 2.3, 2.4, JRuby, Rubinius.
 See the [build status](https://travis-ci.org/kevinrutherford/dag)
 for details.
 
@@ -75,4 +75,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
