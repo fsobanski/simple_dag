@@ -63,11 +63,13 @@ describe DAG do
       end
 
       it 'allows multiple edges between a pair of vertices' do
-        expect { subject.add_edge(origin: v1, destination: v2) }.to_not raise_error
+        expect { subject.add_edge(origin: v1, destination: v2) }
+          .to_not raise_error
       end
 
       it 'can specify properties' do
-        e2 = subject.add_edge(origin: v1, destination: v2, properties: { foo: 'bar' })
+        e2 = subject.add_edge(origin: v1, destination: v2,
+                              properties: { foo: 'bar' })
         expect(e2.properties[:foo]).to eq('bar')
       end
     end
@@ -82,14 +84,18 @@ describe DAG do
       end
 
       it 'requires the endpoints to be vertices' do
-        expect { subject.add_edge(from: v1, to: 23) }.to raise_error(ArgumentError)
-        expect { subject.add_edge(from: 45, to: v1) }.to raise_error(ArgumentError)
+        expect { subject.add_edge(from: v1, to: 23) }
+          .to raise_error(ArgumentError)
+        expect { subject.add_edge(from: 45, to: v1) }
+          .to raise_error(ArgumentError)
       end
 
       it 'requires the endpoints to be in the same DAG' do
         v2 = DAG.new.add_vertex
-        expect { subject.add_edge(from: v1, to: v2) }.to raise_error(ArgumentError)
-        expect { subject.add_edge(from: v2, to: v1) }.to raise_error(ArgumentError)
+        expect { subject.add_edge(from: v1, to: v2) }
+          .to raise_error(ArgumentError)
+        expect { subject.add_edge(from: v2, to: v1) }
+          .to raise_error(ArgumentError)
       end
 
       it 'rejects an edge that would create a loop' do
@@ -99,11 +105,13 @@ describe DAG do
         subject.add_edge from: v1, to: v2
         subject.add_edge from: v2, to: v3
         subject.add_edge from: v3, to: v4
-        expect { subject.add_edge from: v4, to: v1 }.to raise_error(ArgumentError)
+        expect { subject.add_edge from: v4, to: v1 }
+          .to raise_error(ArgumentError)
       end
 
       it 'rejects an edge from a vertex to itself' do
-        expect { subject.add_edge from: v1, to: v1 }.to raise_error(ArgumentError)
+        expect { subject.add_edge from: v1, to: v1 }
+          .to raise_error(ArgumentError)
       end
     end
 
@@ -137,7 +145,9 @@ describe DAG do
     let(:joe) { subject.add_vertex(name: 'joe') }
     let(:bob) { subject.add_vertex(name: 'bob') }
     let(:jane) { subject.add_vertex(name: 'jane') }
-    let!(:e1) { subject.add_edge(origin: joe, destination: bob, properties: { name: 'father of' }) }
+    let!(:e1) do
+      subject.add_edge(origin: joe, destination: bob,
+                       properties: { name: 'father of' }) end
     let!(:e2) { subject.add_edge(origin: joe, destination: jane) }
     let!(:e3) { subject.add_edge(origin: bob, destination: jane) }
 
@@ -155,31 +165,36 @@ describe DAG do
 
       it 'of joe and his descendants' do
         subgraph = subject.subgraph([], [joe])
-        expect(Set.new(subgraph.vertices.map(&:my_name))).to eq(Set.new(%w[joe bob jane]))
+        expect(Set.new(subgraph.vertices.map(&:my_name)))
+          .to eq(Set.new(%w[joe bob jane]))
         expect(subgraph.edges.length).to eq(3)
       end
 
       it 'of Jane and her ancestors' do
         subgraph = subject.subgraph([jane], [])
-        expect(Set.new(subgraph.vertices.map(&:my_name))).to eq(Set.new(%w[joe bob jane]))
+        expect(Set.new(subgraph.vertices.map(&:my_name)))
+          .to eq(Set.new(%w[joe bob jane]))
         expect(subgraph.edges.length).to eq(3)
       end
 
       it 'of jane and her descendants' do
         subgraph = subject.subgraph([], [jane])
-        expect(Set.new(subgraph.vertices.map(&:my_name))).to eq(Set.new(['jane']))
+        expect(Set.new(subgraph.vertices.map(&:my_name)))
+          .to eq(Set.new(['jane']))
         expect(subgraph.edges).to be_empty
       end
 
       it 'of bob and his descendants' do
         subgraph = subject.subgraph([], [bob])
-        expect(Set.new(subgraph.vertices.map(&:my_name))).to eq(Set.new(%w[bob jane]))
+        expect(Set.new(subgraph.vertices.map(&:my_name)))
+          .to eq(Set.new(%w[bob jane]))
         expect(subgraph.edges.length).to eq(1)
       end
 
       it 'there is something incestuous going on here' do
         subgraph = subject.subgraph([bob], [bob])
-        expect(Set.new(subgraph.vertices.map(&:my_name))).to eq(Set.new(%w[bob jane joe]))
+        expect(Set.new(subgraph.vertices.map(&:my_name)))
+          .to eq(Set.new(%w[bob jane joe]))
         expect(subgraph.edges.length).to eq(2)
         expect(subgraph.edges[0].properties).to eq(name: 'father of')
         expect(subgraph.edges[1].properties).to eq({})

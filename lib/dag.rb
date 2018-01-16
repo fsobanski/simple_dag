@@ -28,14 +28,16 @@ class DAG
 
   def add_edge(attrs)
     origin = attrs[:origin] || attrs[:source] || attrs[:from] || attrs[:start]
-    destination = attrs[:destination] || attrs[:sink] || attrs[:to] || attrs[:end]
+    destination = attrs[:destination] || attrs[:sink] || attrs[:to] ||
+                  attrs[:end]
     properties = attrs[:properties] || {}
     raise ArgumentError, 'Origin must be a vertex in this DAG' unless
       is_my_vertex?(origin)
     raise ArgumentError, 'Destination must be a vertex in this DAG' unless
       is_my_vertex?(destination)
     raise ArgumentError, 'A DAG must not have cycles' if origin == destination
-    raise ArgumentError, 'A DAG must not have cycles' if destination.has_path_to?(origin)
+    raise ArgumentError, 'A DAG must not have cycles' if
+      destination.has_path_to?(origin)
     Edge.new(origin, destination, properties).tap { |e| @edges << e }
   end
 
@@ -61,7 +63,8 @@ class DAG
     successors_of.each { |v| v.descendants(successors_set) }
 
     successors_set.each do |v|
-      vertex_mapping[v] = result.add_vertex(payload = v.payload) unless vertex_mapping.include? v
+      vertex_mapping[v] = result.add_vertex(payload = v.payload) unless
+        vertex_mapping.include? v
     end
 
     # get the unique edges

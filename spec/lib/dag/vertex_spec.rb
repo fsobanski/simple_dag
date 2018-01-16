@@ -13,7 +13,8 @@ describe DAG::Vertex do
     end
 
     it 'cannot have a path to a vertex in a different DAG' do
-      expect { subject.has_path_to?(DAG.new.add_vertex) }.to raise_error(ArgumentError)
+      expect { subject.has_path_to?(DAG.new.add_vertex) }
+        .to raise_error(ArgumentError)
     end
   end
 
@@ -23,7 +24,8 @@ describe DAG::Vertex do
     end
 
     it 'ancestors must be in the same DAG' do
-      expect { subject.has_ancestor?(DAG.new.add_vertex) }.to raise_error(ArgumentError)
+      expect { subject.has_ancestor?(DAG.new.add_vertex) }
+        .to raise_error(ArgumentError)
     end
   end
 
