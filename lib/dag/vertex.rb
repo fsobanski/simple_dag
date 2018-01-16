@@ -54,8 +54,7 @@ class DAG
     def reachable_from?(other)
       raise ArgumentError, 'You must supply a vertex in this DAG' unless
         vertex_in_my_dag?(other)
-      predecessors.include?(other) ||
-        predecessors.any? { |v| v.reachable_from? other }
+      other.path_to? self
     end
 
     #
