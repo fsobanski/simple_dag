@@ -7,24 +7,24 @@ describe DAG::Vertex do
   let(:v2) { dag.add_vertex(name: :v2) }
   let(:v3) { dag.add_vertex(name: 'v3') }
 
-  describe '#has_path_to?' do
+  describe '#path_to?' do
     it 'cannot have a path to a non-vertex' do
-      expect { subject.has_path_to?(23) }.to raise_error(ArgumentError)
+      expect { subject.path_to?(23) }.to raise_error(ArgumentError)
     end
 
     it 'cannot have a path to a vertex in a different DAG' do
-      expect { subject.has_path_to?(DAG.new.add_vertex) }
+      expect { subject.path_to?(DAG.new.add_vertex) }
         .to raise_error(ArgumentError)
     end
   end
 
-  describe '#has_ancestor?' do
+  describe '#reachable_from?' do
     it 'ancestors must be a vertex' do
-      expect { subject.has_ancestor?(23) }.to raise_error(ArgumentError)
+      expect { subject.reachable_from?(23) }.to raise_error(ArgumentError)
     end
 
     it 'ancestors must be in the same DAG' do
-      expect { subject.has_ancestor?(DAG.new.add_vertex) }
+      expect { subject.reachable_from?(DAG.new.add_vertex) }
         .to raise_error(ArgumentError)
     end
   end
@@ -63,8 +63,8 @@ describe DAG::Vertex do
     end
 
     it 'has no paths to its predecessors' do
-      expect(subject.has_path_to?(v1)).to be_falsey
-      expect(subject.has_path_to?(v2)).to be_falsey
+      expect(subject.path_to?(v1)).to be_falsey
+      expect(subject.path_to?(v2)).to be_falsey
     end
 
     context 'with multiple paths' do
@@ -75,9 +75,9 @@ describe DAG::Vertex do
     end
 
     it 'has the correct ancestors' do
-      expect(subject.has_ancestor?(v1)).to be_truthy
-      expect(subject.has_ancestor?(v2)).to be_truthy
-      expect(subject.has_ancestor?(v3)).to be_falsey
+      expect(subject.reachable_from?(v1)).to be_truthy
+      expect(subject.reachable_from?(v2)).to be_truthy
+      expect(subject.reachable_from?(v3)).to be_falsey
     end
   end
 
@@ -96,8 +96,8 @@ describe DAG::Vertex do
     end
 
     it 'has paths to its successors' do
-      expect(subject.has_path_to?(v1)).to be_truthy
-      expect(subject.has_path_to?(v2)).to be_truthy
+      expect(subject.path_to?(v1)).to be_truthy
+      expect(subject.path_to?(v2)).to be_truthy
     end
 
     context 'with multiple paths' do
@@ -108,8 +108,8 @@ describe DAG::Vertex do
     end
 
     it 'has no ancestors' do
-      expect(subject.has_ancestor?(v1)).to be_falsey
-      expect(subject.has_ancestor?(v2)).to be_falsey
+      expect(subject.reachable_from?(v1)).to be_falsey
+      expect(subject.reachable_from?(v2)).to be_falsey
     end
   end
 
@@ -120,15 +120,15 @@ describe DAG::Vertex do
     end
 
     it 'has a deep path to v2' do
-      expect(subject.has_path_to?(v2)).to be_truthy
+      expect(subject.path_to?(v2)).to be_truthy
     end
 
     it 'has no path to v3' do
-      expect(subject.has_path_to?(v3)).to be_falsey
+      expect(subject.path_to?(v3)).to be_falsey
     end
 
     it 'recognises that it is an ancestor of v2' do
-      expect(v2.has_ancestor?(subject)).to be_truthy
+      expect(v2.reachable_from?(subject)).to be_truthy
     end
 
     it 'is known to all descendants' do

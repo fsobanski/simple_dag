@@ -37,7 +37,7 @@ class DAG
       my_vertex?(destination)
     raise ArgumentError, 'A DAG must not have cycles' if origin == destination
     raise ArgumentError, 'A DAG must not have cycles' if
-      destination.has_path_to?(origin)
+      destination.path_to?(origin)
     Edge.new(origin, destination, properties).tap { |e| @edges << e }
   end
 

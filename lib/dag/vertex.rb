@@ -38,10 +38,10 @@ class DAG
     # @raise [ArgumentError] if +other+ is not a Vertex in the same DAG
     # @return true iff there is a path following edges within this DAG
     #
-    def has_path_to?(other)
+    def path_to?(other)
       raise ArgumentError, 'You must supply a vertex in this DAG' unless
         vertex_in_my_dag?(other)
-      successors.include?(other) || successors.any? { |v| v.has_path_to? other }
+      successors.include?(other) || successors.any? { |v| v.path_to? other }
     end
 
     #
@@ -51,11 +51,11 @@ class DAG
     # @raise [ArgumentError] if +other+ is not a Vertex in the same DAG
     # @return true iff there is a path following edges within this DAG
     #
-    def has_ancestor?(other)
+    def reachable_from?(other)
       raise ArgumentError, 'You must supply a vertex in this DAG' unless
         vertex_in_my_dag?(other)
       predecessors.include?(other) ||
-        predecessors.any? { |v| v.has_ancestor? other }
+        predecessors.any? { |v| v.reachable_from? other }
     end
 
     #

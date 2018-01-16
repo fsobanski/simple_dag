@@ -34,8 +34,8 @@ v3 = dag.add_vertex
 dag.add_edge from: v1, to: v2
 dag.add_edge from: v2, to: v3
 
-v1.has_path_to?(v3)                  # => true
-v3.has_path_to?(v1)                  # => false
+v1.path_to?(v3)                  # => true
+v3.path_to?(v1)                  # => false
 
 dag.add_edge from: v3, to: v1        # => ArgumentError: A DAG must not have cycles
 
