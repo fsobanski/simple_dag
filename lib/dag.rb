@@ -55,7 +55,7 @@ class DAG
     predecessors_of.each { |v| v.ancestors(predecessors_set) }
 
     predecessors_set.each do |v|
-      vertex_mapping[v] = result.add_vertex(payload = v.payload)
+      vertex_mapping[v] = result.add_vertex(v.payload)
     end
 
     # Get the set of successor vertices and add a copy to the result
@@ -63,7 +63,7 @@ class DAG
     successors_of.each { |v| v.descendants(successors_set) }
 
     successors_set.each do |v|
-      vertex_mapping[v] = result.add_vertex(payload = v.payload) unless
+      vertex_mapping[v] = result.add_vertex(v.payload) unless
         vertex_mapping.include? v
     end
 
