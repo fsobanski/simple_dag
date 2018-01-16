@@ -40,7 +40,7 @@ class DAG
     #
     def has_path_to?(other)
       raise ArgumentError, 'You must supply a vertex in this DAG' unless
-        is_vertex_in_my_dag?(other)
+        vertex_in_my_dag?(other)
       successors.include?(other) || successors.any? { |v| v.has_path_to? other }
     end
 
@@ -56,7 +56,7 @@ class DAG
     #
     def has_ancestor?(other)
       raise ArgumentError, 'You must supply a vertex in this DAG' unless
-        is_vertex_in_my_dag?(other)
+        vertex_in_my_dag?(other)
       predecessors.include?(other) ||
         predecessors.any? { |v| v.has_ancestor? other }
     end
@@ -96,7 +96,7 @@ class DAG
 
     private
 
-    def is_vertex_in_my_dag?(v)
+    def vertex_in_my_dag?(v)
       v.is_a?(Vertex) && (v.dag == dag)
     end
   end

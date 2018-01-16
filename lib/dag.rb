@@ -32,9 +32,9 @@ class DAG
                   attrs[:end]
     properties = attrs[:properties] || {}
     raise ArgumentError, 'Origin must be a vertex in this DAG' unless
-      is_my_vertex?(origin)
+      my_vertex?(origin)
     raise ArgumentError, 'Destination must be a vertex in this DAG' unless
-      is_my_vertex?(destination)
+      my_vertex?(destination)
     raise ArgumentError, 'A DAG must not have cycles' if origin == destination
     raise ArgumentError, 'A DAG must not have cycles' if
       destination.has_path_to?(origin)
@@ -44,7 +44,7 @@ class DAG
   def subgraph(predecessors_of = [], successors_of = [])
     (predecessors_of + successors_of).each do |v|
       raise ArgumentError, 'You must supply a vertex in this DAG' unless
-        is_my_vertex?(v)
+        my_vertex?(v)
     end
 
     result = self.class.new(mixin: @mixin)
@@ -122,7 +122,7 @@ class DAG
 
   private
 
-  def is_my_vertex?(v)
+  def my_vertex?(v)
     v.is_a?(Vertex) && (v.dag == self)
   end
 end
