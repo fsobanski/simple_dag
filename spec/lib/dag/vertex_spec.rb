@@ -33,7 +33,7 @@ describe DAG::Vertex do
     it 'allows the payload to be accessed' do
       expect(subject[:name]).to eq('Fred')
       expect(subject[:size]).to eq(34)
-      expect(subject.payload).to eq({name: 'Fred', size: 34})
+      expect(subject.payload).to eq(name: 'Fred', size: 34)
     end
 
     it 'returns nil for missing payload key' do
@@ -134,13 +134,11 @@ describe DAG::Vertex do
     end
 
     it 'knows has no ancestors' do
-      expect(subject.ancestors).to eq(Set.new())
+      expect(subject.ancestors).to eq(Set.new)
     end
 
     it 'knows has all descendants' do
       expect(subject.descendants).to eq(Set.new([v1, v2]))
     end
-
   end
-
 end

@@ -1,7 +1,6 @@
 require 'set'
 
 class DAG
-
   class Vertex
     attr_reader :dag, :payload
 
@@ -13,11 +12,11 @@ class DAG
     private :initialize
 
     def outgoing_edges
-      @dag.edges.select {|e| e.origin == self}
+      @dag.edges.select { |e| e.origin == self }
     end
 
     def incoming_edges
-      @dag.edges.select {|e| e.destination == self}
+      @dag.edges.select { |e| e.destination == self }
     end
 
     def predecessors
@@ -40,13 +39,13 @@ class DAG
     # @return true iff there is a path following edges within this DAG
     #
     def has_path_to?(other)
-      raise ArgumentError.new('You must supply a vertex in this DAG') unless
+      raise ArgumentError, 'You must supply a vertex in this DAG' unless
         is_vertex_in_my_dag?(other)
-      successors.include?(other) || successors.any? {|v| v.has_path_to?(other) }
+      successors.include?(other) || successors.any? { |v| v.has_path_to?(other) }
     end
 
-    alias :has_descendant? :has_path_to?
-    alias :has_descendent? :has_path_to? # for backwards compat
+    alias has_descendant? has_path_to?
+    alias has_descendent? has_path_to? # for backwards compat
 
     #
     # Is there a path from +other+ to here following edges in the DAG?
@@ -56,12 +55,12 @@ class DAG
     # @return true iff there is a path following edges within this DAG
     #
     def has_ancestor?(other)
-      raise ArgumentError.new('You must supply a vertex in this DAG') unless
+      raise ArgumentError, 'You must supply a vertex in this DAG' unless
         is_vertex_in_my_dag?(other)
-      predecessors.include?(other) || predecessors.any? {|v| v.has_ancestor?(other) }
+      predecessors.include?(other) || predecessors.any? { |v| v.has_ancestor?(other) }
     end
 
-    alias :is_reachable_from? :has_ancestor?
+    alias is_reachable_from? has_ancestor?
 
     #
     # Retrieve a value from the vertex's payload.
@@ -81,7 +80,7 @@ class DAG
           v.ancestors(result_set)
         end
       end
-      return result_set
+      result_set
     end
 
     def descendants(result_set = Set.new)
@@ -91,14 +90,13 @@ class DAG
           v.descendants(result_set)
         end
       end
-      return result_set
+      result_set
     end
 
     private
 
     def is_vertex_in_my_dag?(v)
-      v.kind_of?(Vertex) and v.dag == self.dag
+      v.is_a?(Vertex) && (v.dag == dag)
     end
   end
-
 end

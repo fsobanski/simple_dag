@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe DAG do
-
   it 'when new' do
     expect(subject.vertices).to be_empty
     expect(subject.edges).to be_empty
@@ -68,7 +67,7 @@ describe DAG do
       end
 
       it 'can specify properties' do
-        e2 = subject.add_edge(origin: v1, destination: v2, properties: {foo: 'bar'})
+        e2 = subject.add_edge(origin: v1, destination: v2, properties: { foo: 'bar' })
         expect(e2.properties[:foo]).to eq('bar')
       end
     end
@@ -124,9 +123,7 @@ describe DAG do
       it 'allows :start and :end' do
         expect(subject.add_edge(start: v1, end: v2)).to eq(e1)
       end
-
     end
-
   end
 
   context 'given a dag' do
@@ -137,57 +134,56 @@ describe DAG do
       end
     end
 
-    let(:joe) { subject.add_vertex(name: "joe") }
-    let(:bob) { subject.add_vertex(name: "bob") }
-    let(:jane) { subject.add_vertex(name: "jane") }
-    let!(:e1) { subject.add_edge(origin: joe, destination: bob, properties: {name: "father of"} ) }
+    let(:joe) { subject.add_vertex(name: 'joe') }
+    let(:bob) { subject.add_vertex(name: 'bob') }
+    let(:jane) { subject.add_vertex(name: 'jane') }
+    let!(:e1) { subject.add_edge(origin: joe, destination: bob, properties: { name: 'father of' }) }
     let!(:e2) { subject.add_edge(origin: joe, destination: jane) }
     let!(:e3) { subject.add_edge(origin: bob, destination: jane) }
 
     describe '.subgraph' do
       it 'returns a graph' do
-        expect(subject.subgraph()).to be_an_instance_of(DAG)
+        expect(subject.subgraph).to be_an_instance_of(DAG)
       end
 
       it 'of joe and his ancestors' do
-        subgraph = subject.subgraph([joe,],[])
+        subgraph = subject.subgraph([joe], [])
         expect(subgraph.vertices.length).to eq(1)
-        expect(subgraph.vertices[0].my_name).to eq("joe")
+        expect(subgraph.vertices[0].my_name).to eq('joe')
         expect(subgraph.edges).to be_empty
       end
 
       it 'of joe and his descendants' do
-        subgraph = subject.subgraph([],[joe,])
-        expect(Set.new(subgraph.vertices.map(&:my_name))).to eq(Set.new(["joe","bob","jane"]))
+        subgraph = subject.subgraph([], [joe])
+        expect(Set.new(subgraph.vertices.map(&:my_name))).to eq(Set.new(%w[joe bob jane]))
         expect(subgraph.edges.length).to eq(3)
       end
 
       it 'of Jane and her ancestors' do
-        subgraph = subject.subgraph([jane,],[])
-        expect(Set.new(subgraph.vertices.map(&:my_name))).to eq(Set.new(["joe","bob","jane"]))
+        subgraph = subject.subgraph([jane], [])
+        expect(Set.new(subgraph.vertices.map(&:my_name))).to eq(Set.new(%w[joe bob jane]))
         expect(subgraph.edges.length).to eq(3)
       end
 
       it 'of jane and her descendants' do
-        subgraph = subject.subgraph([],[jane,])
-        expect(Set.new(subgraph.vertices.map(&:my_name))).to eq(Set.new(["jane"]))
+        subgraph = subject.subgraph([], [jane])
+        expect(Set.new(subgraph.vertices.map(&:my_name))).to eq(Set.new(['jane']))
         expect(subgraph.edges).to be_empty
       end
 
       it 'of bob and his descendants' do
-        subgraph = subject.subgraph([],[bob,])
-        expect(Set.new(subgraph.vertices.map(&:my_name))).to eq(Set.new(["bob","jane"]))
+        subgraph = subject.subgraph([], [bob])
+        expect(Set.new(subgraph.vertices.map(&:my_name))).to eq(Set.new(%w[bob jane]))
         expect(subgraph.edges.length).to eq(1)
       end
 
       it 'there is something incestuous going on here' do
-        subgraph = subject.subgraph([bob,],[bob,])
-        expect(Set.new(subgraph.vertices.map(&:my_name))).to eq(Set.new(["bob","jane","joe"]))
+        subgraph = subject.subgraph([bob], [bob])
+        expect(Set.new(subgraph.vertices.map(&:my_name))).to eq(Set.new(%w[bob jane joe]))
         expect(subgraph.edges.length).to eq(2)
-        expect(subgraph.edges[0].properties).to eq({name: "father of"})
+        expect(subgraph.edges[0].properties).to eq(name: 'father of')
         expect(subgraph.edges[1].properties).to eq({})
       end
-
     end
 
     describe '.topological_sort' do
@@ -195,12 +191,10 @@ describe DAG do
         sort = subject.topological_sort
         expect(sort).to be_an_instance_of(Array)
         expect(sort.length).to eq(3)
-        expect(sort[0].my_name).to eq("joe")
-        expect(sort[1].my_name).to eq("bob")
-        expect(sort[2].my_name).to eq("jane")
+        expect(sort[0].my_name).to eq('joe')
+        expect(sort[1].my_name).to eq('bob')
+        expect(sort[2].my_name).to eq('jane')
       end
     end
-
   end
-
 end

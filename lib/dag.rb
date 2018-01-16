@@ -3,7 +3,6 @@ require 'set'
 require_relative 'dag/vertex'
 
 class DAG
-
   Edge = Struct.new(:origin, :destination, :properties)
 
   attr_reader :vertices, :edges
@@ -21,34 +20,32 @@ class DAG
   end
 
   def add_vertex(payload = {})
-    Vertex.new(self, payload).tap {|v|
+    Vertex.new(self, payload).tap do |v|
       v.extend(@mixin) if @mixin
       @vertices << v
-    }
+    end
   end
 
   def add_edge(attrs)
     origin = attrs[:origin] || attrs[:source] || attrs[:from] || attrs[:start]
     destination = attrs[:destination] || attrs[:sink] || attrs[:to] || attrs[:end]
     properties = attrs[:properties] || {}
-    raise ArgumentError.new('Origin must be a vertex in this DAG') unless
+    raise ArgumentError, 'Origin must be a vertex in this DAG' unless
       is_my_vertex?(origin)
-    raise ArgumentError.new('Destination must be a vertex in this DAG') unless
+    raise ArgumentError, 'Destination must be a vertex in this DAG' unless
       is_my_vertex?(destination)
-    raise ArgumentError.new('A DAG must not have cycles') if origin == destination
-    raise ArgumentError.new('A DAG must not have cycles') if destination.has_path_to?(origin)
-    Edge.new(origin, destination, properties).tap {|e| @edges << e }
+    raise ArgumentError, 'A DAG must not have cycles' if origin == destination
+    raise ArgumentError, 'A DAG must not have cycles' if destination.has_path_to?(origin)
+    Edge.new(origin, destination, properties).tap { |e| @edges << e }
   end
 
   def subgraph(predecessors_of = [], successors_of = [])
-
-
-    (predecessors_of + successors_of).each { |v|
-      raise ArgumentError.new('You must supply a vertex in this DAG') unless
+    (predecessors_of + successors_of).each do |v|
+      raise ArgumentError, 'You must supply a vertex in this DAG' unless
         is_my_vertex?(v)
-      }
+    end
 
-    result = self.class.new({mixin: @mixin})
+    result = self.class.new(mixin: @mixin)
     vertex_mapping = {}
 
     # Get the set of predecessors verticies and add a copy to the result
@@ -56,7 +53,7 @@ class DAG
     predecessors_of.each { |v| v.ancestors(predecessors_set) }
 
     predecessors_set.each do |v|
-      vertex_mapping[v] = result.add_vertex(payload=v.payload)
+      vertex_mapping[v] = result.add_vertex(payload = v.payload)
     end
 
     # Get the set of successor vertices and add a copy to the result
@@ -64,7 +61,7 @@ class DAG
     successors_of.each { |v| v.descendants(successors_set) }
 
     successors_set.each do |v|
-      vertex_mapping[v] = result.add_vertex(payload=v.payload) unless vertex_mapping.include? v
+      vertex_mapping[v] = result.add_vertex(payload = v.payload) unless vertex_mapping.include? v
     end
 
     # get the unique edges
@@ -78,10 +75,11 @@ class DAG
       result.add_edge(
         from: vertex_mapping[e.origin],
         to: vertex_mapping[e.destination],
-        properties: e.properties)
+        properties: e.properties
+      )
     end
 
-    return result
+    result
   end
 
   # Returns an array of the vertices in the graph in a topological order, i.e.
@@ -116,13 +114,12 @@ class DAG
       visit.call v
     end
 
-    return result
+    result
   end
 
   private
 
   def is_my_vertex?(v)
-    v.kind_of?(Vertex) and v.dag == self
+    v.is_a?(Vertex) && (v.dag == self)
   end
-
 end
