@@ -58,8 +58,6 @@ class DAG
         predecessors.any? { |v| v.has_ancestor? other }
     end
 
-    alias is_reachable_from? has_ancestor?
-
     #
     # Retrieve a value from the vertex's payload.
     # This is a shortcut for vertex.payload[key].
