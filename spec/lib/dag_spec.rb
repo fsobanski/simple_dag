@@ -30,7 +30,7 @@ describe DAG do
     end
 
     it 'mixes the module into evey vertex' do
-      expect((Thing === v)).to be_truthy
+      expect(v.is_a?(Thing)).to be_truthy
     end
 
     it 'allows the module to access the payload' do
@@ -147,7 +147,8 @@ describe DAG do
     let(:jane) { subject.add_vertex(name: 'jane') }
     let!(:e1) do
       subject.add_edge(origin: joe, destination: bob,
-                       properties: { name: 'father of' }) end
+                       properties: { name: 'father of' })
+    end
     let!(:e2) { subject.add_edge(origin: joe, destination: jane) }
     let!(:e3) { subject.add_edge(origin: bob, destination: jane) }
 

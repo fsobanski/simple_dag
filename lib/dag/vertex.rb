@@ -32,12 +32,11 @@ class DAG
     # Is there a path from here to +other+ following edges in the DAG?
     #
     # @param [DAG::Vertex] another Vertex is the same DAG
-    # @raise [ArgumentError] if +other+ is not a Vertex in the same DAG
+    # @raise [ArgumentError] if +other+ is not a Vertex
     # @return true iff there is a path following edges within this DAG
     #
     def path_to?(other)
-      raise ArgumentError, 'You must supply a vertex in this DAG' unless
-        vertex_in_my_dag?(other)
+      raise ArgumentError, 'You must supply a vertex' unless other.is_a? Vertex
       successors.include?(other) || successors.any? { |v| v.path_to? other }
     end
 
@@ -45,12 +44,11 @@ class DAG
     # Is there a path from +other+ to here following edges in the DAG?
     #
     # @param [DAG::Vertex] another Vertex is the same DAG
-    # @raise [ArgumentError] if +other+ is not a Vertex in the same DAG
+    # @raise [ArgumentError] if +other+ is not a Vertex
     # @return true iff there is a path following edges within this DAG
     #
     def reachable_from?(other)
-      raise ArgumentError, 'You must supply a vertex in this DAG' unless
-        vertex_in_my_dag?(other)
+      raise ArgumentError, 'You must supply a vertex' unless other.is_a? Vertex
       other.path_to? self
     end
 
@@ -89,10 +87,6 @@ class DAG
 
     def add_edge(destination, properties)
       Edge.new(self, destination, properties).tap { |e| @outgoing_edges << e }
-    end
-
-    def vertex_in_my_dag?(v)
-      v.is_a?(Vertex) && (v.dag == dag)
     end
   end
 end
