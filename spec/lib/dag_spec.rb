@@ -145,58 +145,62 @@ describe DAG do
     let(:joe) { subject.add_vertex(name: 'joe') }
     let(:bob) { subject.add_vertex(name: 'bob') }
     let(:jane) { subject.add_vertex(name: 'jane') }
+    let(:ada) { subject.add_vertex(name: 'ada') }
+    let(:chris) { subject.add_vertex(name: 'chris') }
     let!(:e1) do
       subject.add_edge(origin: joe, destination: bob,
                        properties: { name: 'father of' })
     end
     let!(:e2) { subject.add_edge(origin: joe, destination: jane) }
     let!(:e3) { subject.add_edge(origin: bob, destination: jane) }
+    let!(:e4) { subject.add_edge(origin: ada, destination: joe) }
+    let!(:e5) { subject.add_edge(origin: jane, destination: chris) }
 
     describe '.subgraph' do
       it 'returns a graph' do
         expect(subject.subgraph).to be_an_instance_of(DAG)
       end
 
-      it 'of joe and his ancestors' do
-        subgraph = subject.subgraph([joe], [])
+      it 'of ada and her ancestors' do
+        subgraph = subject.subgraph([ada], [])
         expect(subgraph.vertices.size).to eq(1)
-        expect(subgraph.vertices[0].my_name).to eq('joe')
+        expect(subgraph.vertices[0].my_name).to eq('ada')
         expect(subgraph.enumerated_edges.size).to eq(0)
       end
 
       it 'of joe and his descendants' do
         subgraph = subject.subgraph([], [joe])
         expect(Set.new(subgraph.vertices.map(&:my_name)))
-          .to eq(Set.new(%w[joe bob jane]))
-        expect(subgraph.enumerated_edges.size).to eq(3)
+          .to eq(Set.new(%w[joe bob jane chris]))
+        expect(subgraph.enumerated_edges.size).to eq(4)
       end
 
       it 'of Jane and her ancestors' do
         subgraph = subject.subgraph([jane], [])
         expect(Set.new(subgraph.vertices.map(&:my_name)))
-          .to eq(Set.new(%w[joe bob jane]))
-        expect(subgraph.enumerated_edges.size).to eq(3)
+          .to eq(Set.new(%w[joe bob jane ada]))
+        expect(subgraph.enumerated_edges.size).to eq(4)
       end
 
-      it 'of jane and her descendants' do
-        subgraph = subject.subgraph([], [jane])
+      it 'of chris and his descendants' do
+        subgraph = subject.subgraph([], [chris])
         expect(Set.new(subgraph.vertices.map(&:my_name)))
-          .to eq(Set.new(['jane']))
+          .to eq(Set.new(['chris']))
         expect(subgraph.enumerated_edges.size).to eq(0)
       end
 
       it 'of bob and his descendants' do
         subgraph = subject.subgraph([], [bob])
         expect(Set.new(subgraph.vertices.map(&:my_name)))
-          .to eq(Set.new(%w[bob jane]))
-        expect(subgraph.enumerated_edges.size).to eq(1)
+          .to eq(Set.new(%w[bob jane chris]))
+        expect(subgraph.enumerated_edges.size).to eq(2)
       end
 
       it 'there is something incestuous going on here' do
         subgraph = subject.subgraph([bob], [bob])
         expect(Set.new(subgraph.vertices.map(&:my_name)))
-          .to eq(Set.new(%w[bob jane joe]))
-        expect(subgraph.enumerated_edges.size).to eq(2)
+          .to eq(Set.new(%w[bob jane joe ada chris]))
+        expect(subgraph.enumerated_edges.size).to eq(4)
       end
     end
 
@@ -204,10 +208,12 @@ describe DAG do
       it 'returns a correct topological sort' do
         sort = subject.topological_sort
         expect(sort).to be_an_instance_of(Array)
-        expect(sort.size).to eq(3)
-        expect(sort[0].my_name).to eq('joe')
-        expect(sort[1].my_name).to eq('bob')
-        expect(sort[2].my_name).to eq('jane')
+        expect(sort.size).to eq(5)
+        expect(sort[0].my_name).to eq('ada')
+        expect(sort[1].my_name).to eq('joe')
+        expect(sort[2].my_name).to eq('bob')
+        expect(sort[3].my_name).to eq('jane')
+        expect(sort[4].my_name).to eq('chris')
       end
     end
   end
