@@ -17,11 +17,11 @@ class DAG
     end
 
     def predecessors
-      incoming_edges.map(&:origin).uniq
+      incoming_edges.map(&:origin)
     end
 
     def successors
-      @outgoing_edges.map(&:destination).uniq
+      @outgoing_edges.map(&:destination)
     end
 
     def inspect

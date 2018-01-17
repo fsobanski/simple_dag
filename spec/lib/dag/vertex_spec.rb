@@ -66,9 +66,9 @@ describe DAG::Vertex do
     end
 
     context 'with multiple paths' do
-      it 'lists each predecessor only once' do
-        dag.add_edge from: v1, to: subject
-        expect(subject.predecessors).to eq([v1, v2])
+      it 'throws an exception' do
+        expect { dag.add_edge from: v1, to: subject }
+          .to raise_error(ArgumentError)
       end
     end
 
@@ -96,13 +96,6 @@ describe DAG::Vertex do
     it 'has paths to its successors' do
       expect(subject.path_to?(v1)).to be_truthy
       expect(subject.path_to?(v2)).to be_truthy
-    end
-
-    context 'with multiple paths' do
-      it 'lists each successor only once' do
-        dag.add_edge from: subject, to: v1
-        expect(subject.successors).to eq([v1, v2])
-      end
     end
 
     it 'has no ancestors' do

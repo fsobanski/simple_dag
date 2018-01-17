@@ -43,7 +43,9 @@ describe DAG do
 
     context 'when valid' do
       let(:v2) { subject.add_vertex }
-      let!(:e1) { subject.add_edge(origin: v1, destination: v2) }
+      let!(:e1) do
+        subject.add_edge(from: v1, to: v2, properties: { foo: 'bar' })
+      end
 
       it 'leaves the origin vertex' do
         expect(v1.outgoing_edges).to eq([e1])
@@ -58,19 +60,8 @@ describe DAG do
         expect(v2.outgoing_edges).to be_empty
       end
 
-      it 'it has no properties' do
-        expect(e1.properties).to be_empty
-      end
-
-      it 'allows multiple edges between a pair of vertices' do
-        expect { subject.add_edge(origin: v1, destination: v2) }
-          .to_not raise_error
-      end
-
       it 'can specify properties' do
-        e2 = subject.add_edge(origin: v1, destination: v2,
-                              properties: { foo: 'bar' })
-        expect(e2.properties[:foo]).to eq('bar')
+        expect(e1.properties[:foo]).to eq('bar')
       end
     end
 
@@ -118,18 +109,38 @@ describe DAG do
     context 'with different keywords' do
       let(:v1) { subject.add_vertex }
       let(:v2) { subject.add_vertex }
-      let!(:e1) { subject.add_edge(origin: v1, destination: v2) }
+
+      it 'allows :origin and :destination' do
+        expect { subject.add_edge(origin: v1, destination: v2) }
+          .to_not raise_error
+      end
+    end
+
+    context 'with different keywords' do
+      let(:v1) { subject.add_vertex }
+      let(:v2) { subject.add_vertex }
 
       it 'allows :source and :sink' do
-        expect(subject.add_edge(source: v1, sink: v2)).to eq(e1)
+        expect { subject.add_edge(source: v1, sink: v2) }.to_not raise_error
       end
+    end
+
+    context 'with different keywords' do
+      let(:v1) { subject.add_vertex }
+      let(:v2) { subject.add_vertex }
 
       it 'allows :from and :to' do
-        expect(subject.add_edge(from: v1, to: v2)).to eq(e1)
+        expect { subject.add_edge(from: v1, to: v2) }
+          .to_not raise_error
       end
+    end
+
+    context 'with different keywords' do
+      let(:v1) { subject.add_vertex }
+      let(:v2) { subject.add_vertex }
 
       it 'allows :start and :end' do
-        expect(subject.add_edge(start: v1, end: v2)).to eq(e1)
+        expect { subject.add_edge(start: v1, end: v2) }.to_not raise_error
       end
     end
   end
