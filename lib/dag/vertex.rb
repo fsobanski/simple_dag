@@ -2,21 +2,18 @@ require 'set'
 
 class DAG
   class Vertex
-    attr_reader :dag, :payload
+    attr_reader :dag, :payload, :outgoing_edges
 
     def initialize(dag, payload)
       @dag = dag
       @payload = payload
+      @outgoing_edges = []
     end
 
     private :initialize
 
-    def outgoing_edges
-      @dag.edges.select { |e| e.origin == self }
-    end
-
     def incoming_edges
-      @dag.edges.select { |e| e.destination == self }
+      @dag.enumerated_edges.select { |e| e.destination == self }
     end
 
     def predecessors
@@ -24,7 +21,7 @@ class DAG
     end
 
     def successors
-      outgoing_edges.map(&:destination).uniq
+      @outgoing_edges.map(&:destination).uniq
     end
 
     def inspect
@@ -89,6 +86,10 @@ class DAG
     end
 
     private
+
+    def add_edge(destination, properties)
+      Edge.new(self, destination, properties).tap { |e| @outgoing_edges << e }
+    end
 
     def vertex_in_my_dag?(v)
       v.is_a?(Vertex) && (v.dag == dag)

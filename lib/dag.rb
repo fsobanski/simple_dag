@@ -5,7 +5,7 @@ require_relative 'dag/vertex'
 class DAG
   Edge = Struct.new(:origin, :destination, :properties)
 
-  attr_reader :vertices, :edges
+  attr_reader :vertices
 
   #
   # Create a new Directed Acyclic Graph
@@ -15,8 +15,8 @@ class DAG
   #
   def initialize(options = {})
     @vertices = []
-    @edges = []
     @mixin = options[:mixin]
+    @n_of_edges = 0
   end
 
   def add_vertex(payload = {})
@@ -38,7 +38,19 @@ class DAG
     raise ArgumentError, 'A DAG must not have cycles' if origin == destination
     raise ArgumentError, 'A DAG must not have cycles' if
       destination.path_to?(origin)
-    Edge.new(origin, destination, properties).tap { |e| @edges << e }
+    @n_of_edges += 1
+    origin.send :add_edge, destination, properties
+  end
+
+  # @return Enumerator over all edges in the dag
+  def enumerated_edges
+    Enumerator.new(@n_of_edges) do |e|
+      @vertices.each { |v| v.outgoing_edges.each { |out| e << out } }
+    end
+  end
+
+  def edges
+    enumerated_edges.to_a
   end
 
   def subgraph(predecessors_of = [], successors_of = [])
@@ -92,11 +104,8 @@ class DAG
   # Uses a depth first search.
   #
   # Assuming that the method include? of class Set runs in linear time, which
-  # can be assumed in all practical cases, this method runs in O(n*m) where
-  # m is the number of edges and n is the number of vertices because the method
-  # successors of class Vertex uses the method outgoing_edges, which runs in
-  # O(m). If the outgoing_edges of Vertex would be cached or precomputed then
-  # this topological sorting could run in O(n+m).
+  # can be assumed in all practical cases, this method runs in O(n+m) where
+  # m is the number of edges and n is the number of vertices.
   def topological_sort
     result_size = 0
     result = Array.new(@vertices.length)

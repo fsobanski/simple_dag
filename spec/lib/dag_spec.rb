@@ -3,7 +3,7 @@ require 'spec_helper'
 describe DAG do
   it 'when new' do
     expect(subject.vertices).to be_empty
-    expect(subject.edges).to be_empty
+    expect(subject.enumerated_edges.size).to eq(0)
   end
 
   context 'with one vertex' do
@@ -158,46 +158,44 @@ describe DAG do
 
       it 'of joe and his ancestors' do
         subgraph = subject.subgraph([joe], [])
-        expect(subgraph.vertices.length).to eq(1)
+        expect(subgraph.vertices.size).to eq(1)
         expect(subgraph.vertices[0].my_name).to eq('joe')
-        expect(subgraph.edges).to be_empty
+        expect(subgraph.enumerated_edges.size).to eq(0)
       end
 
       it 'of joe and his descendants' do
         subgraph = subject.subgraph([], [joe])
         expect(Set.new(subgraph.vertices.map(&:my_name)))
           .to eq(Set.new(%w[joe bob jane]))
-        expect(subgraph.edges.length).to eq(3)
+        expect(subgraph.enumerated_edges.size).to eq(3)
       end
 
       it 'of Jane and her ancestors' do
         subgraph = subject.subgraph([jane], [])
         expect(Set.new(subgraph.vertices.map(&:my_name)))
           .to eq(Set.new(%w[joe bob jane]))
-        expect(subgraph.edges.length).to eq(3)
+        expect(subgraph.enumerated_edges.size).to eq(3)
       end
 
       it 'of jane and her descendants' do
         subgraph = subject.subgraph([], [jane])
         expect(Set.new(subgraph.vertices.map(&:my_name)))
           .to eq(Set.new(['jane']))
-        expect(subgraph.edges).to be_empty
+        expect(subgraph.enumerated_edges.size).to eq(0)
       end
 
       it 'of bob and his descendants' do
         subgraph = subject.subgraph([], [bob])
         expect(Set.new(subgraph.vertices.map(&:my_name)))
           .to eq(Set.new(%w[bob jane]))
-        expect(subgraph.edges.length).to eq(1)
+        expect(subgraph.enumerated_edges.size).to eq(1)
       end
 
       it 'there is something incestuous going on here' do
         subgraph = subject.subgraph([bob], [bob])
         expect(Set.new(subgraph.vertices.map(&:my_name)))
           .to eq(Set.new(%w[bob jane joe]))
-        expect(subgraph.edges.length).to eq(2)
-        expect(subgraph.edges[0].properties).to eq(name: 'father of')
-        expect(subgraph.edges[1].properties).to eq({})
+        expect(subgraph.enumerated_edges.size).to eq(2)
       end
     end
 
@@ -205,7 +203,7 @@ describe DAG do
       it 'returns a correct topological sort' do
         sort = subject.topological_sort
         expect(sort).to be_an_instance_of(Array)
-        expect(sort.length).to eq(3)
+        expect(sort.size).to eq(3)
         expect(sort[0].my_name).to eq('joe')
         expect(sort[1].my_name).to eq('bob')
         expect(sort[2].my_name).to eq('jane')
