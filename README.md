@@ -48,7 +48,7 @@ See the specs for more detailed usage scenarios.
 
 ## Compatibility
 
-Tested with Ruby 2.2, 2.3, 2.4, JRuby, Rubinius.
+Tested with Ruby 2.2, 2.3, 2.4, 2.5, JRuby, Rubinius.
 See the [build status](https://travis-ci.org/kevinrutherford/dag)
 for details.
 
