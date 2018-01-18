@@ -51,8 +51,8 @@ See the specs for more detailed usage scenarios.
 ## Compatibility
 
 Tested with Ruby 2.2, 2.3, 2.4, 2.5, JRuby, Rubinius.
-See the [build status](https://travis-ci.org/kevinrutherford/dag)
-for details.
+Builds with Ruby 2.5 and JRuby are currently failing. See
+[this issue](https://github.com/fsobanski/dag/issues/1) for details.
 
 ## Differences to [dag](https://github.com/kevinrutherford/dag)
 
@@ -118,5 +118,5 @@ on `DAG::Vertex#descendants`, `DAG::Vertex#ancestors` and `DAG::add_edge`.
 
 - The computational complexity of `DAG::edges` has worsened from a constant
 complexity to a linear complexity. This is irrelevant if you want to iterate
-over all the edges in the graph. You should then consider to use
+over all the edges in the graph. You should consider using
 `DAG#enumerated_edges` for a better space utilization.
