@@ -12,17 +12,7 @@ want to migrate.
 
 ## Installation
 
-Install the gem
-
-```
-gem install dag
-```
-
-Or add it to your Gemfile and run `bundle`.
-
-``` ruby
-gem 'dag'
-```
+A gem will be released soon.
 
 ## Usage
 
