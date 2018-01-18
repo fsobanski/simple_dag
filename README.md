@@ -1,12 +1,14 @@
 # DAG
 
-Very simple directed acyclic graphs for Ruby.
+Simple directed acyclic graphs for Ruby.
 
-[![Build Status](https://travis-ci.org/kevinrutherford/dag.png)](https://travis-ci.org/kevinrutherford/dag)
-[![Dependency
-Status](https://gemnasium.com/kevinrutherford/dag.png)](https://gemnasium.com/kevinrutherford/dag)
-[![Code
-Climate](https://codeclimate.com/github/kevinrutherford/dag.png)](https://codeclimate.com/github/kevinrutherford/dag)
+## History
+
+This ruby gem started out as a fork of [kevinrutherford's dag implementation](https://github.com/kevinrutherford/dag). If you want to migrate
+from his implementation to this one, have a look at the
+[breaking changes](#breaking-changes). Have a look at
+[performance improvements](#performance-improvements) to see why you might
+want to migrate.
 
 ## Installation
 
@@ -51,6 +53,73 @@ See the specs for more detailed usage scenarios.
 Tested with Ruby 2.2, 2.3, 2.4, 2.5, JRuby, Rubinius.
 See the [build status](https://travis-ci.org/kevinrutherford/dag)
 for details.
+
+## Differences to [dag](https://github.com/kevinrutherford/dag)
+
+### Breaking changes
+
+- The function `DAG::Vertex#has_path_to?` aliased as
+`DAG::Vertex#has_descendant?` and `DAG::Vertex#has_descendent?` has been renamed
+to `DAG::Vertex#path_to?`. The aliases have been removed.
+
+- The function `DAG::Vertex#has_ancestor?` aliased as
+`DAG::Vertex#is_reachable_from?` has been renamed to
+`DAG::Vertex#reachable_from?`. The aliases have been removed.
+
+- The array of edges returned by `DAG#edges` is no longer sorted by insertion
+order of the edges.
+
+- `DAG::Vertex#path_to?` and `DAG::Vertex#reachable_from?` no longer raise
+errors if the vertex passed as an argument is not a vertex in the same `DAG`.
+Instead, they just return `false`.
+
+- [Parallel edges](https://en.wikipedia.org/wiki/Multiple_edges) are no longer
+allowed in the dag. Instead, `DAG#add_edge` raises an `ArgumentError` if you
+try to add an edge between two adjacent vertices. If you want to model a
+multigraph, you can add a weight payload to the edges that contains a natural
+number.
+
+### New functions
+
+- `DAG#topological_sort` returns a topological sort of the vertices in the dag
+in a theoretically optimal computational time complexity.
+
+- `DAG#enumerated_edges` returns an `Enumerator` of the edges in the dag.
+
+### Performance improvements
+
+- The computational complexity of `DAG::Vertex#outgoing_edges` has
+*improved* to a constant because the edges are no longer stored in one array in
+the `DAG`. Instead, the edges are now stored in their respective source
+`Vertex`.
+
+- The performance of `DAG::Vertex#successors` has *improved* because firstly,
+it depends on `DAG::Vertex#outgoing_edges` and secondly the call to
+`Array#uniq` is no longer necessary since parallel edges are prohibited.
+
+- The computational complexities of `DAG::Vertex#descendants`,
+`DAG::Vertex#path_to?` and `DAG::Vertex#reachable_from?` have *improved* because
+the functions depend on `DAG::Vertex#successors`.
+
+- The computational complexity of `DAG::Vertex#incoming_edges` is
+*unchanged*: Linear in the number of all edges in the `DAG`.
+
+- The performance of `DAG::Vertex#predecessors` has *improved* because the call
+to `Array#uniq` is no longer necessary since parallel edges are prohibited.
+
+- The performance of `DAG::Vertex#ancestors` has *improved* because the function
+depends on `DAG::Vertex#predecessors`.
+
+- The computational complexity of `DAG::add_edge` has *improved* because the
+cycle check in the function depends on `DAG::Vertex#path_to?`.
+
+- The performance of `DAG#subgraph` has *improved* because the function depends
+on `DAG::Vertex#descendants`, `DAG::Vertex#ancestors` and `DAG::add_edge`.
+
+- The computational complexity of `DAG::edges` has worsened from a constant
+complexity to a linear complexity. This is irrelevant if you want to iterate
+over all the edges in the graph. You should then consider to use
+`DAG#enumerated_edges` for a better space utilization.
 
 ## License
 
