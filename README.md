@@ -79,31 +79,31 @@ in a theoretically optimal computational time complexity.
 ### Performance improvements
 
 - The computational complexity of `DAG::Vertex#outgoing_edges` has
-*improved* to a constant because the edges are no longer stored in one array in
+improved to a constant because the edges are no longer stored in one array in
 the `DAG`. Instead, the edges are now stored in their respective source
 `Vertex`.
 
-- The performance of `DAG::Vertex#successors` has *improved* because firstly,
+- The performance of `DAG::Vertex#successors` has improved because firstly,
 it depends on `DAG::Vertex#outgoing_edges` and secondly the call to
 `Array#uniq` is no longer necessary since parallel edges are prohibited.
 
 - The computational complexities of `DAG::Vertex#descendants`,
-`DAG::Vertex#path_to?` and `DAG::Vertex#reachable_from?` have *improved* because
+`DAG::Vertex#path_to?` and `DAG::Vertex#reachable_from?` have improved because
 the functions depend on `DAG::Vertex#successors`.
 
 - The computational complexity of `DAG::Vertex#incoming_edges` is
-*unchanged*: Linear in the number of all edges in the `DAG`.
+unchanged: Linear in the number of all edges in the `DAG`.
 
-- The performance of `DAG::Vertex#predecessors` has *improved* because the call
+- The performance of `DAG::Vertex#predecessors` has improved because the call
 to `Array#uniq` is no longer necessary since parallel edges are prohibited.
 
-- The performance of `DAG::Vertex#ancestors` has *improved* because the function
+- The performance of `DAG::Vertex#ancestors` has improved because the function
 depends on `DAG::Vertex#predecessors`.
 
-- The computational complexity of `DAG::add_edge` has *improved* because the
+- The computational complexity of `DAG::add_edge` has improved because the
 cycle check in the function depends on `DAG::Vertex#path_to?`.
 
-- The performance of `DAG#subgraph` has *improved* because the function depends
+- The performance of `DAG#subgraph` has improved because the function depends
 on `DAG::Vertex#descendants`, `DAG::Vertex#ancestors` and `DAG::add_edge`.
 
 - The computational complexity of `DAG::edges` has worsened from a constant
