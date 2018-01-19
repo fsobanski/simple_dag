@@ -37,7 +37,17 @@ class DAG
     #
     def path_to?(other)
       raise ArgumentError, 'You must supply a vertex' unless other.is_a? Vertex
-      successors.include?(other) || successors.any? { |v| v.path_to? other }
+      visited = Set.new
+
+      visit = lambda { |v|
+        return false if visited.include? v
+        return true if v.successors.lazy.include? other
+        return true if v.successors.lazy.any? { |succ| visit.call succ }
+        visited.add v
+        false
+      }
+
+      visit.call self
     end
 
     #
