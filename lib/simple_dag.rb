@@ -1,6 +1,6 @@
 require 'set'
 
-require_relative 'dag/vertex'
+require_relative 'simple_dag/vertex'
 
 class DAG
   Edge = Struct.new(:origin, :destination, :properties)

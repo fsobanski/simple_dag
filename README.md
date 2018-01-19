@@ -12,11 +12,23 @@ want to migrate.
 
 ## Installation
 
-A gem will be released soon.
+Install the gem
+
+```
+gem install simple_dag
+```
+
+Or add it to your Gemfile and run `bundle`.
+
+``` ruby
+gem 'simple_dag'
+```
 
 ## Usage
 
 ```ruby
+require 'simple_dag'
+
 dag = DAG.new
 
 v1 = dag.add_vertex
@@ -31,7 +43,7 @@ v3.path_to?(v1)                  # => false
 
 dag.add_edge from: v3, to: v1        # => ArgumentError: A DAG must not have cycles
 
-dag.add_edge from: v1, to: v2
+dag.add_edge from: v1, to: v2        # => ArgumentError: Edge already exists
 dag.add_edge from: v1, to: v3
 v1.successors                        # => [v2, v3]
 ```
