@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'simple_dag'
-  s.version     = '0.0.0'
+  s.version     = '0.0.1'
   s.license     = 'MIT'
   s.summary     = 'Simple directed acyclic graphs'
   s.description = 'A simple library for working with directed acyclic graphs'
