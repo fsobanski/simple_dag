@@ -82,13 +82,13 @@ class DAG
       end
 
     # Add the edges to the result via the vertex mapping
+    n_of_result_edges = 0
     (predecessor_edges | successors_set.flat_map(&:outgoing_edges)).each do |e|
-      result.add_edge(
-        from: vertex_mapping[e.origin],
-        to: vertex_mapping[e.destination],
-        properties: e.properties
-      )
+      n_of_result_edges += 1
+      vertex_mapping[e.origin].send :add_edge, vertex_mapping[e.destination],
+                                    e.properties
     end
+    result.instance_variable_set :@n_of_edges, n_of_result_edges
 
     result
   end
