@@ -68,27 +68,21 @@ class DAG
     predecessors_set = Set.new(predecessors_of)
     predecessors_of.each { |v| v.ancestors(predecessors_set) }
 
-    predecessors_set.each do |v|
-      vertex_mapping[v] = result.add_vertex(v.payload)
-    end
-
     # Get the set of successor vertices and add a copy to the result
     successors_set = Set.new(successors_of)
     successors_of.each { |v| v.descendants(successors_set) }
 
-    successors_set.each do |v|
-      vertex_mapping[v] = result.add_vertex(v.payload) unless
-        vertex_mapping.include? v
+    (predecessors_set + successors_set).each do |v|
+      vertex_mapping[v] = result.add_vertex(v.payload)
     end
 
-    # get the unique edges
-    edge_set = (
-      predecessors_set.flat_map(&:incoming_edges) +
-      successors_set.flat_map(&:outgoing_edges)
-    ).uniq
+    predecessor_edges =
+      predecessors_set.flat_map(&:outgoing_edges).select do |e|
+        predecessors_set.include? e.destination
+      end
 
-    # Add them to the result via the vertex mapping
-    edge_set.each do |e|
+    # Add the edges to the result via the vertex mapping
+    (predecessor_edges | successors_set.flat_map(&:outgoing_edges)).each do |e|
       result.add_edge(
         from: vertex_mapping[e.origin],
         to: vertex_mapping[e.destination],
