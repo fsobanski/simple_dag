@@ -104,10 +104,10 @@ it depends on `DAG::Vertex#outgoing_edges` and secondly the call to
 the functions depend on `DAG::Vertex#successors`
 
 - I optimized `DAG::Vertex#path_to?` further in commit
-fsobanski/simple_dag@5d8f8e52c9b9906ab89f00d420fe70d0344abf33
+[5d8f8e5](https://github.com/fsobanski/simple_dag/commit/5d8f8e52c9b9906ab89f00d420fe70d0344abf33)
 
 - I optimized `DAG::Vertex#descendants` further in commit
-fsobanski/simple_dag@58f823312f9c4d88c2a52d8b875268069a3de173
+[58f8233](https://github.com/fsobanski/simple_dag/commit/58f823312f9c4d88c2a52d8b875268069a3de173)
 
 - The computational complexity of `DAG::Vertex#incoming_edges` is
 unchanged: Linear in the number of all edges in the `DAG`.
@@ -118,7 +118,7 @@ to `Array#uniq` is no longer necessary since parallel edges are prohibited.
 - The performance of `DAG::Vertex#ancestors` has improved because the function
 depends on `DAG::Vertex#predecessors` and I optimized `DAG::Vertex#ancestors`
 further in commit
-fsobanski/simple_dag@/58f823312f9c4d88c2a52d8b875268069a3de173
+[58f8233](https://github.com/fsobanski/simple_dag/commit/58f823312f9c4d88c2a52d8b875268069a3de173)
 
 - The computational complexity of `DAG::add_edge` has improved because the
 cycle check in the function depends on `DAG::Vertex#path_to?`.
@@ -126,9 +126,9 @@ cycle check in the function depends on `DAG::Vertex#path_to?`.
 - The performance of `DAG#subgraph` has improved because the function depends
 on `DAG::Vertex#descendants`, `DAG::Vertex#ancestors` and `DAG::add_edge`.
 And I optimized `DAG#subgraph` further in commits
-fsobanski/simple_dag@eda52e4b7698294e0ac576730eeec7c8f5ac1c20
+[eda52e4](https://github.com/fsobanski/simple_dag/commit/eda52e4b7698294e0ac576730eeec7c8f5ac1c20)
 and
-fsobanski/simple_dag@6cd84ddfcd5174030bf8cd79c8b5dfeb5af2f0ea.
+[6cd84dd](https://github.com/fsobanski/simple_dag/commit/6cd84ddfcd5174030bf8cd79c8b5dfeb5af2f0ea)
 
 - The computational complexity of `DAG::edges` has worsened from a constant
 complexity to a linear complexity. This is irrelevant if you want to iterate
